@@ -1,0 +1,32 @@
+version: '3'
+volumes:
+  data:
+services:
+  db:
+    image: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: mydatabase
+      MYSQL_USER: bot
+      MYSQL_PASSWORD: 123
+    volumes:
+      - data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - bot
+  bot:
+    build: .
+    depends_on:
+      - db
+    environment:
+      - db_url=db
+      - db_user=bot
+      - db_pass=123
+    ports:
+      - "80:80"
+    networks:
+      - bot
+networks:
+  bot:
+    driver: bridge
